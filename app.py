@@ -70,3 +70,12 @@ with col2 :
     step=1,
     key="system_size"
 )
+
+# SIDEBAR
+st.sidebar.subheader("Model assumptions")
+st.sidebar.caption(f"Installed cost: ${COST_PER_W}/W")
+st.sidebar.caption(f"Generation: {GEN_PER_KW:,} kWh/kW/yr")
+st.sidebar.caption(f"Electricity escalation: {ESCALATION*100:.1f}%/yr")
+st.sidebar.caption(f"O&M cost: ${OM_PER_KW}/kW/yr")
+st.sidebar.caption(f"ITC: {int(ITC*100)}% in Year 0")
+st.sidebar.caption("Source: ElectricChoice.com (May 2026)")
