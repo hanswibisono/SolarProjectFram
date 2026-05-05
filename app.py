@@ -171,3 +171,27 @@ with col5:
         value=f"{payback_year} yrs" if payback_year else ">25 yrs",
         help="Year when cumulative cash flow turns positive"
     )
+# CASH FLOW TABLE
+st.divider()
+st.subheader("25-year cash flow table")
+
+# Add the Year 0 row at the top (the investment year)
+year_zero = {
+    "Year":               0,
+    "Generation (kWh)":   "—",
+    "Rate (¢/kWh)":       "—",
+    "Energy Savings ($), annual generation x rate": f"ITC: +${itc_credit:,.0f}",
+    "O&M Cost ($)":       "—",
+    "Net Cash Flow ($), energy savings - annual O&M":  round(-net_cost, 0),
+    "Cumulative of net cash flow ($)":     round(-net_cost, 0),
+}
+
+# Convert rows list to a pandas DataFrame
+df = pd.DataFrame([year_zero] + rows)
+
+# Display the table using Streamlit
+st.dataframe(
+    df,
+    hide_index=True,
+    use_container_width=True
+)
