@@ -133,3 +133,41 @@ for year in range(1, YEARS + 1):
 
 # Calculate IRR using numpy_financial
 irr = npf.irr(cashflows)
+
+# METRIC CARDS (KEY OUTPUTS)
+st.subheader("Key metrics")
+col1, col2, col3, col4, col5 = st.columns(5)
+with col1:
+    st.metric(
+        label="System upfront price",
+        value=f"${gross_cost:,.0f}",
+        help="Total installed cost before the ITC tax credit"
+    )
+
+with col2:
+    st.metric(
+        label="Net cost after ITC",
+        value=f"${net_cost:,.0f}",
+        help="Upfront cost after applying the 30% Investment Tax Credit"
+    )
+
+with col3:
+    st.metric(
+        label="Annual generation",
+        value=f"{annual_gen:,.0f} kWh",
+        help="Estimated annual energy production (location-agnostic)"
+    )
+
+with col4:
+    st.metric(
+        label="Project IRR",
+        value=f"{irr*100:.1f}%",
+        help="Internal Rate of Return over 25 years, unlevered"
+    )
+
+with col5:
+    st.metric(
+        label="Payback period",
+        value=f"{payback_year} yrs" if payback_year else ">25 yrs",
+        help="Year when cumulative cash flow turns positive"
+    )
