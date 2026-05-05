@@ -4,7 +4,7 @@ A web-based financial modeling dashboard for US residential rooftop solar projec
 
 The app uses two key inputs: a US state and system size, then returns a full 25-year cash flow projection, including project IRR payback period, annual energy savings, and upfront cost after the federal Investment Tax Credit (ITC).
 
-Live demo: https://solarproject-hans.streamlit.app
+Live demo: https://hanswibisono-solarprojectfram-app-zinxc9.streamlit.app
 
 (rest of README below)
 
