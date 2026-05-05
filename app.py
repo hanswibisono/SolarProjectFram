@@ -79,3 +79,57 @@ st.sidebar.caption(f"Electricity escalation: {ESCALATION*100:.1f}%/yr")
 st.sidebar.caption(f"O&M cost: ${OM_PER_KW}/kW/yr")
 st.sidebar.caption(f"ITC: {int(ITC*100)}% in Year 0")
 st.sidebar.caption("Source: ElectricChoice.com (May 2026)")
+
+# FINANCIAL CALCULATIONS
+
+# Look up the electricity rate for the selected state
+rate_cents = STATE_RATES[selected_state]  # ¢/kWh
+
+# --- Upfront costs
+gross_cost  = system_size_kw * 1000 * COST_PER_W   # total before ITC
+itc_credit  = gross_cost * ITC                       # 30% tax credit
+net_cost    = gross_cost - itc_credit                # actual cash out Year 0
+
+# --- Annual generation
+annual_gen  = system_size_kw * GEN_PER_KW   # kWh/year
+annual_om   = system_size_kw * OM_PER_KW    # $/year O&M cost
+
+# --- Build 25-year cash flow model
+cashflows   = [-net_cost]   # Year 0 is a cash outflow (investment)
+rows        = []            # will become the table
+cumulative  = -net_cost     # running total starts at Year 0 outflow
+payback_year = None         # check when cumulative turns positive
+
+for year in range(1, YEARS + 1):
+    # Electricity rate escalates 2.5% per year
+    rate_this_year = (rate_cents / 100) * (1 + ESCALATION) ** (year - 1)
+
+    # Energy savings = electricity avoided × rate
+    energy_savings = annual_gen * rate_this_year
+
+    # Net cash flow = savings minus O&M cost
+    net_cf = energy_savings - annual_om
+
+    # Update running cumulative total
+    cumulative += net_cf
+
+    # Add to IRR cash flow array
+    cashflows.append(net_cf)
+
+    # Detect payback year (first year cumulative goes non-negative)
+    if payback_year is None and cumulative >= 0:
+        payback_year = year
+
+    # Store this year's data as a dictionary in the rows list
+    rows.append({
+        "Year":               year,
+        "Generation (kWh)":   int(annual_gen),
+        "Rate (¢/kWh)":       round(rate_this_year * 100, 2),
+        "Energy Savings ($), annual generation x rate": round(energy_savings, 0),
+        "O&M Cost ($)":       round(annual_om, 0),
+        "Net Cash Flow ($), energy savings - annual O&M":  round(net_cf, 0),
+        "Cumulative of net cash flow ($)":     round(cumulative, 0),
+    })
+
+# Calculate IRR using numpy_financial
+irr = npf.irr(cashflows)
