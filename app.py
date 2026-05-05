@@ -48,3 +48,25 @@ STATE_RATES = {
     "West Virginia": 13.11, "Wisconsin": 18.06, "Wyoming": 12.55
 }
 
+# KEY INPUTS
+st.subheader("Inputs")
+col1, col2 = st.columns(2)
+
+# Dropdown to select a US state
+with col1 :
+    selected_state = st.selectbox(
+    label="US State",
+    options=sorted(STATE_RATES.keys()),
+    index=sorted(STATE_RATES.keys()).index("New York")
+)
+
+# Number input for system size
+with col2 :
+    system_size_kw = st.number_input(
+    label="System size (kW DC)",
+    min_value=1,
+    max_value=1000,
+    value=10,
+    step=1,
+    key="system_size"
+)
